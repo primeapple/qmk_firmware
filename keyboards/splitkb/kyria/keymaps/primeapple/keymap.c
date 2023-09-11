@@ -26,36 +26,13 @@ enum layers {
 // Aliases for readability
 #define COLEMAK  DF(_COLEMAK_DH)
 
+#define SYM   MO(_SYM)
+#define NAV   MO(_NAV)
+#define FKEYS MO(_FUNCTION)
+
 #define CTL_ESC  MT(MOD_LCTL, KC_ESC)
 #define CTL_QUOT MT(MOD_RCTL, KC_QUOTE)
 #define ALTG_ENT MT(MOD_RALT, KC_ENT)
-
-// see https://docs.qmk.fm/#/feature_tap_dance?id=example-5
-enum td_keycodes {
-    _NAV_LPRN,
-    _SYM_RPRN
-};
-
-#define NAV_LPRN TD(_NAV_LPRN)
-#define SYM_RPRN TD(_SYM_RPRN)
-
-typedef enum {
-    TD_NONE,
-    TD_UNKNOWN,
-    TD_SINGLE_TAP,
-    TD_SINGLE_HOLD,
-    TD_DOUBLE_SINGLE_TAP
-} td_state_t;
-
-static td_state_t td_state;
-
-td_state_t cur_dance(tap_dance_state_t *state);
-
-void nav_lprn_finished(tap_dance_state_t *state, void *user_data);
-void nav_lprn_reset(tap_dance_state_t *state, void *user_data);
-
-void sym_rprn_finished(tap_dance_state_t *state, void *user_data);
-void sym_rprn_reset(tap_dance_state_t *state, void *user_data);
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
@@ -68,38 +45,36 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
  * | LShift |   Z  |   X  |   C  |   D  |   V  | [ {  |CapsLk|  |F-keys|  ] } |   K  |   H  | ,  < | . >  | /  ? | RShift |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                        |SCRLCK| LGUI | LAlt | BKsp | Nav/ |  | Sym/ | Space| AltG/| ;  : | Menu |
- *                        |      |      |      |      | (    |  | )    |      | Enter|      |      |
+ *                        | MENU | LGUI | LAlt | BKsp | Nav  |  | Sym  | Space| AltG/| ;  : | FKEYS|
+ *                        |      |      |      |      |      |  |      |      | Enter|      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
-    // TODO SCRLCK is KC_SCRL
     [_COLEMAK_DH] = LAYOUT(
      KC_TAB  , KC_Q ,  KC_W   ,  KC_F  ,   KC_P ,   KC_B ,                                        KC_J  ,   KC_L,  KC_U   ,   KC_Y ,KC_LBRC, KC_RBRC,
      CTL_ESC , KC_A ,  KC_R   ,  KC_S  ,   KC_T ,   KC_G ,                                        KC_M  ,   KC_N,  KC_E   ,   KC_I ,  KC_O , CTL_QUOT,
      KC_LSFT , KC_Z ,  KC_X   ,  KC_C  ,   KC_D ,   KC_V , KC_LBRC,_______ ,   _______, KC_RBRC, KC_K   ,   KC_H,  KC_COMM, KC_DOT ,KC_SLSH, KC_RSFT,
-                               _______ , KC_LGUI, KC_LALT, KC_BSPC,NAV_LPRN,  SYM_RPRN, KC_SPC ,ALTG_ENT,KC_SCLN,  KC_APP
+                                 KC_APP, KC_LGUI, KC_LALT, KC_BSPC,  NAV   ,    SYM   , KC_SPC ,ALTG_ENT,KC_SCLN,  FKEYS
     ),
 
 /*
- * Nav Layer: Function, Navigation
+ * Nav Layer: Media, Navigation
  *
  * ,-------------------------------------------.                               ,-------------------------------------------.
- * |        |  F9  | F10  | F11  | F12  |      |                               | PgUp | Home |   ↑  | End  | VolUp| Delete |
+ * |        |      |      |      |      |      |                               | PgUp | PgDn | HOME | End  | VolUp| Delete |
  * |--------+------+------+------+------+------|                               |------+------+------+------+------+--------|
- * |  CTRL  |  F5  |  F6  |  F7  |  F8  |      |                               | PgDn |  ←   |   ↓  |   →  | VolDn| Insert |
+ * |        | GUI  | ALT  | CTRL | SHIFT|      |                               |  ←   |  ↓   |   ↑  |   →  | VolDn| Insert |
  * |--------+------+------+------+------+------+--------------.  ,-------------+------+------+------+------+------+--------|
- * |        |  F1  |  F2  |  F3  |  F4  |      |       |      |  |      |      | Pause|M Prev|M Play|M Next|VolMut| PrtSc  |
+ * |        |      |      |      |      |      |       |      |  |      |      | Pause|M Prev|M Play|M Next|VolMut| PrtSc  |
  * `----------------------+------+------+------+-------+------|  |------+------+------+------+------+----------------------'
  *                        |      |      |      |       |      |  |      |      |      |      |      |
  *                        |      |      |      |       |      |  |      |      |      |      |      |
  *                        `-----------------------------------'  `----------------------------------'
  */
-    // TODO MOD_RCTL can also be KC_LCTL KC_RCTL or KC_LCTL, test this
     // TODO add brightness controls
    [_NAV] = LAYOUT(
-     _______,  KC_F9 ,  KC_F10,  KC_F11, KC_F12 , _______,                                     KC_PGUP, KC_HOME, KC_UP,   KC_END,  KC_VOLU, KC_DEL,
-     _______,  KC_F5 ,  KC_F6 ,  KC_F7 , KC_F8  , _______,                                     KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_VOLD, KC_INS,
-     _______,  KC_F1 ,  KC_F2 ,  KC_F3 , KC_F4  , _______, _______, _______, _______, _______,KC_PAUSE, KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, KC_PSCR,
+     _______, _______, _______, _______, _______, _______,                                     KC_PGUP, KC_PGDN, KC_HOME,   KC_END,  KC_VOLU, KC_DEL,
+     _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, _______,                                     KC_LEFT, KC_DOWN, KC_UP  , KC_RGHT, KC_VOLD, KC_INS,
+     _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,KC_PAUSE, KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, KC_PSCR,
                                 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
     ),
 
@@ -114,14 +89,34 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |    |   |   \  |  :   |  ;   |  -   |  [   |  {   |      |  |      |   }  |   ]  |  _   |  ,   |  .   |  /   |   ?    |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        |      |      |      |      |      |  |      |      |      |      |      |
- *                        |      |      |      |      |      |  |      |      |      |      |      |
+ *                        |      |      |      |      |Space |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
     [_SYM] = LAYOUT(
       KC_GRV ,   KC_1 ,   KC_2 ,   KC_3 ,   KC_4 ,   KC_5 ,                                       KC_6 ,   KC_7 ,   KC_8 ,   KC_9 ,   KC_0 , KC_EQL ,
      KC_TILD , KC_EXLM,  KC_AT , KC_HASH,  KC_DLR, KC_PERC,                                     KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_PLUS,
      KC_PIPE , KC_BSLS, KC_COLN, KC_SCLN, KC_MINS, KC_LBRC, KC_LCBR, _______, _______, KC_RCBR, KC_RBRC, KC_UNDS, KC_COMM,  KC_DOT, KC_SLSH, KC_QUES,
-                                 _______, KC_LGUI, KC_LALT, _______, _______, _______, _______, _______, _______, _______
+                                 _______, _______, _______, _______ , KC_SPC , _______, _______, _______, _______, _______
+    ),
+/*
+ * Function Layer: Function keys
+ *
+ * ,-------------------------------------------.                              ,-------------------------------------------.
+ * |        |  F9  | F10  | F11  | F12  |      |                              |      |      |      |      |      |        |
+ * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
+ * |        |  F5  |  F6  |  F7  |  F8  |      |                              |      | Shift| Ctrl |  Alt |  GUI |        |
+ * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
+ * |        |  F1  |  F2  |  F3  |  F4  |      |      |      |  |      |      |      |      |      |      |      |        |
+ * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
+ *                        |      |      |      |      |      |  |      |      |      |      |      |
+ *                        |      |      |      |      |      |  |      |      |      |      |      |
+ *                        `----------------------------------'  `----------------------------------'
+ */
+    [_FUNCTION] = LAYOUT(
+      _______,  KC_F9 ,  KC_F10,  KC_F11,  KC_F12, _______,                                     _______, _______, _______, _______, _______, _______,
+      _______,  KC_F5 ,  KC_F6 ,  KC_F7 ,  KC_F8 , _______,                                     _______, KC_RSFT, KC_RCTL, KC_LALT, KC_RGUI, _______,
+      _______,  KC_F1 ,  KC_F2 ,  KC_F3 ,  KC_F4 , _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+                                 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
     ),
 
 // /*
@@ -144,90 +139,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
 //                                  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
 //     ),
-};
-
-
-td_state_t cur_dance(tap_dance_state_t *state) {
-    if (state->count == 1) {
-        if (state->interrupted || !state->pressed) return TD_SINGLE_TAP;
-        else return TD_SINGLE_HOLD;
-    }
-
-    if (state->count == 2) return TD_DOUBLE_SINGLE_TAP;
-    else return TD_UNKNOWN; // Any number higher than the maximum state value you return above
-}
-
-void nav_lprn_finished(tap_dance_state_t *state, void *user_data) {
-    td_state = cur_dance(state);
-    switch (td_state) {
-        case TD_SINGLE_TAP:
-            register_code16(KC_LPRN);
-            break;
-        case TD_SINGLE_HOLD:
-            layer_on(_NAV);
-            break;
-        case TD_DOUBLE_SINGLE_TAP: // Allow nesting of 2 parens `((` within tapping term
-            tap_code16(KC_LPRN);
-            register_code16(KC_LPRN);
-            break;
-        default:
-            break;
-    }
-}
-
-void nav_lprn_reset(tap_dance_state_t *state, void *user_data) {
-    switch (td_state) {
-        case TD_SINGLE_TAP:
-            unregister_code16(KC_LPRN);
-            break;
-        case TD_SINGLE_HOLD:
-            layer_off(_NAV);
-            break;
-        case TD_DOUBLE_SINGLE_TAP:
-            unregister_code16(KC_LPRN);
-            break;
-        default:
-            break;
-    }
-}
-
-void sym_rprn_finished(tap_dance_state_t *state, void *user_data) {
-    td_state = cur_dance(state);
-    switch (td_state) {
-        case TD_SINGLE_TAP:
-            register_code16(KC_RPRN);
-            break;
-        case TD_SINGLE_HOLD:
-            layer_on(_SYM);
-            break;
-        case TD_DOUBLE_SINGLE_TAP: // Allow nesting of 2 parens `((` within tapping term
-            tap_code16(KC_RPRN);
-            register_code16(KC_RPRN);
-            break;
-        default:
-            break;
-    }
-}
-
-void sym_rprn_reset(tap_dance_state_t *state, void *user_data) {
-    switch (td_state) {
-        case TD_SINGLE_TAP:
-            unregister_code16(KC_RPRN);
-            break;
-        case TD_SINGLE_HOLD:
-            layer_off(_SYM);
-            break;
-        case TD_DOUBLE_SINGLE_TAP:
-            unregister_code16(KC_RPRN);
-            break;
-        default:
-            break;
-    }
-}
-
-tap_dance_action_t tap_dance_actions[] = {
-    [_NAV_LPRN] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, nav_lprn_finished, nav_lprn_reset),
-    [_SYM_RPRN] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, sym_rprn_finished, sym_rprn_reset)
 };
 
 
