@@ -32,7 +32,19 @@ enum layers {
 
 #define CTL_ESC  MT(MOD_LCTL, KC_ESC)
 #define CTL_QUOT MT(MOD_RCTL, KC_QUOTE)
+#define ALT_BSPC MT(MOD_LALT, KC_BSPC)
 #define ALTG_ENT MT(MOD_RALT, KC_ENT)
+
+/* // Left-hand home row mods */
+/* #define G_A LGUI_T(KC_A) */
+/* #define A_R LALT_T(KC_R) */
+/* #define C_S LCTL_T(KC_S) */
+/* #define S_T LSFT_T(KC_T) */
+/* // Right-hand home row mods */
+/* #define S_N RSFT_T(KC_N) */
+/* #define C_E RCTL_T(KC_E) */
+/* #define A_I LALT_T(KC_I) */
+/* #define G_O RGUI_T(KC_O) */
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
@@ -45,15 +57,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
  * | LShift |   Z  |   X  |   C  |   D  |   V  | [ {  |CapsLk|  |F-keys|  ] } |   K  |   H  | ,  < | . >  | /  ? | RShift |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                        | MENU | LGUI | LAlt | BKsp | Nav  |  | Sym  | Space| AltG/| ;  : | FKEYS|
- *                        |      |      |      |      |      |  |      |      | Enter|      |      |
+ *                        | MENU | LGUI | BkSp/|LShift| Nav  |  | Sym  | Space| AltG/|CapsLK| FKEYS|
+ *                        |      |      | LAlt |      |      |  |      |      | Enter| word |      |
  *                        `----------------------------------'  `----------------------------------'
  */
     [_COLEMAK_DH] = LAYOUT(
-     KC_TAB  , KC_Q ,  KC_W   ,  KC_F  ,   KC_P ,   KC_B ,                                        KC_J  ,   KC_L,  KC_U   ,   KC_Y ,KC_LBRC, KC_RBRC,
-     CTL_ESC , KC_A ,  KC_R   ,  KC_S  ,   KC_T ,   KC_G ,                                        KC_M  ,   KC_N,  KC_E   ,   KC_I ,  KC_O , CTL_QUOT,
-     KC_LSFT , KC_Z ,  KC_X   ,  KC_C  ,   KC_D ,   KC_V , KC_LBRC,_______ ,   _______, KC_RBRC, KC_K   ,   KC_H,  KC_COMM, KC_DOT ,KC_SLSH, KC_RSFT,
-                                 KC_APP, KC_LGUI, KC_LALT, KC_BSPC,  NAV   ,    SYM   , KC_SPC ,ALTG_ENT,KC_SCLN,  FKEYS
+     KC_TAB  , KC_Q ,  KC_W   ,  KC_F  ,   KC_P ,   KC_B ,                                        KC_J  ,   KC_L,  KC_U   ,   KC_Y ,KC_LBRC, KC_RBRC ,
+     CTL_ESC , KC_A  , KC_R   ,  KC_S  ,   KC_T ,   KC_G ,                                        KC_M  ,   KC_N,  KC_E   ,   KC_I ,KC_O   , CTL_QUOT,
+     KC_LSFT , KC_Z ,  KC_X   ,  KC_C  ,   KC_D ,   KC_V , KC_LBRC,_______ ,   _______, KC_RBRC, KC_K   ,   KC_H,  KC_COMM, KC_DOT ,KC_SLSH, KC_RSFT ,
+                                 KC_APP, KC_LGUI,ALT_BSPC, KC_LSFT,  NAV   ,    SYM   , KC_SPC ,ALTG_ENT,CW_TOGG,  FKEYS
     ),
 
 /*
@@ -72,7 +84,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
     // TODO add brightness controls
    [_NAV] = LAYOUT(
-     _______, _______, _______, _______, _______, _______,                                     KC_PGUP, KC_PGDN, KC_HOME,   KC_END,  KC_VOLU, KC_DEL,
+     _______, _______, _______, _______, _______, _______,                                     KC_PGUP, KC_PGDN, KC_HOME,  KC_END, KC_VOLU, KC_DEL,
      _______, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, _______,                                     KC_LEFT, KC_DOWN, KC_UP  , KC_RGHT, KC_VOLD, KC_INS,
      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,KC_PAUSE, KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, KC_PSCR,
                                 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
@@ -115,7 +127,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_FUNCTION] = LAYOUT(
       _______,  KC_F9 ,  KC_F10,  KC_F11,  KC_F12, _______,                                     _______, _______, _______, _______, _______, _______,
       _______,  KC_F5 ,  KC_F6 ,  KC_F7 ,  KC_F8 , _______,                                     _______, KC_RSFT, KC_RCTL, KC_LALT, KC_RGUI, _______,
-      _______,  KC_F1 ,  KC_F2 ,  KC_F3 ,  KC_F4 , _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+      _______,  KC_F1 ,  KC_F2 ,  KC_F3 ,  KC_F4 , _______, _______, _______, _______, _______, _______, DT_PRNT, DT_UP  , DT_DOWN, _______, _______,
                                  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
     ),
 
