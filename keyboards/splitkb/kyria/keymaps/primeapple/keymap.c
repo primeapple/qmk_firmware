@@ -268,6 +268,7 @@ bool oled_task_user(void) {
 }
 #endif
 
+/*
 #ifdef ENCODER_ENABLE
 bool encoder_update_user(uint8_t index, bool clockwise) {
 
@@ -289,3 +290,4 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
     return false;
 }
 #endif
+*/
