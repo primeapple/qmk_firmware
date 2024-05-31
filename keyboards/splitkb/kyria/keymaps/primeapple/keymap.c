@@ -56,10 +56,10 @@ TapHold tapholds[] = {
     { .tap_char = '!', .hold_code = KC_LGUI },
     { .tap_char = '@', .hold_code = KC_LALT },
     { .tap_char = '#', .hold_code = KC_LCTL },
-    { .tap_char = '%', .hold_code = KC_LSFT },
+    { .tap_char = '$', .hold_code = KC_LSFT },
     { .tap_char = '&', .hold_code = KC_RSFT },
     { .tap_char = '*', .hold_code = KC_RCTL},
-    { .tap_char = '(', .hold_code = KC_RALT },
+    { .tap_char = '(', .hold_code = KC_LALT },
     { .tap_char = ')', .hold_code = KC_RGUI },
 };
 
