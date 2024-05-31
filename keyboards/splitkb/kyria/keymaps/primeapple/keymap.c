@@ -46,6 +46,35 @@ enum layers {
 /* #define A_I LALT_T(KC_I) */
 /* #define G_O RGUI_T(KC_O) */
 
+// Idea from https://pastebin.com/btB69xKE
+typedef struct TapHolds {
+    char            tap_char;
+    uint16_t        hold_code;
+} TapHold;
+
+TapHold tapholds[] = {
+    { .tap_char = '!', .hold_code = KC_LGUI },
+    { .tap_char = '@', .hold_code = KC_LALT },
+    { .tap_char = '#', .hold_code = KC_LCTL },
+    { .tap_char = '%', .hold_code = KC_LSFT },
+    { .tap_char = '&', .hold_code = KC_RSFT },
+    { .tap_char = '*', .hold_code = KC_RCTL},
+    { .tap_char = '(', .hold_code = KC_RALT },
+    { .tap_char = ')', .hold_code = KC_RGUI },
+};
+
+enum my_keycodes {
+    G_EX = SAFE_RANGE,
+    A_AT,
+    C_HA,
+    S_DL,
+    S_AM,
+    C_AS,
+    A_LP,
+    G_RP,
+    KC_LAST
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
  * Base Layer: Colemak DH
@@ -106,10 +135,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
     [_SYM] = LAYOUT(
       KC_GRV ,   KC_1 ,   KC_2 ,   KC_3 ,   KC_4 ,   KC_5 ,                                       KC_6 ,   KC_7 ,   KC_8 ,   KC_9 ,   KC_0 , KC_EQL ,
-     KC_TILD , KC_EXLM,  KC_AT , KC_HASH,  KC_DLR, KC_PERC,                                     KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_PLUS,
+     KC_TILD , G_EX   ,  A_AT  , C_HA   ,  S_DL  , KC_PERC,                                     KC_CIRC, S_AM   , C_AS   , A_LP   , G_RP   , KC_PLUS,
      KC_PIPE , KC_BSLS, KC_COLN, KC_SCLN, KC_MINS, KC_LBRC, KC_LCBR, _______, _______, KC_RCBR, KC_RBRC, KC_UNDS, KC_COMM,  KC_DOT, KC_SLSH, KC_QUES,
                                  _______, _______, _______, _______ , KC_SPC , _______, _______, _______, _______, _______
     ),
+
 /*
  * Function Layer: Function keys
  *
@@ -153,6 +183,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //     ),
 };
 
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    static uint16_t timer;
+
+    if (SAFE_RANGE <= keycode && keycode < KC_LAST) {
+        TapHold taphold = tapholds[keycode - SAFE_RANGE];
+
+        if (record->event.pressed) {
+            timer = timer_read();
+            register_code(taphold.hold_code);
+        } else {
+            unregister_code(taphold.hold_code);
+            if (timer_elapsed(timer) < TAPPING_TERM) {
+                send_char(taphold.tap_char);
+            }
+        }
+        return false;
+    }
+    return true;
+}
 
 /* The default OLED and rotary encoder code can be found at the bottom of qmk_firmware/keyboards/splitkb/kyria/rev1/rev1.c
  * These default settings can be overriden by your own settings in your keymap.c
