@@ -32,7 +32,6 @@ enum layers {
 
 #define CTL_ESC  MT(MOD_LCTL, KC_ESC)
 #define CTL_QUOT MT(MOD_RCTL, KC_QUOTE)
-#define ALT_BSPC MT(MOD_LALT, KC_BSPC)
 #define ALTG_ENT MT(MOD_RALT, KC_ENT)
 
 /* // Left-hand home row mods */
@@ -94,7 +93,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      KC_TAB  , KC_Q ,  KC_W   ,  KC_F  ,   KC_P ,   KC_B ,                                        KC_J  ,   KC_L,  KC_U   ,   KC_Y ,KC_LBRC, KC_RBRC ,
      CTL_ESC , KC_A  , KC_R   ,  KC_S  ,   KC_T ,   KC_G ,                                        KC_M  ,   KC_N,  KC_E   ,   KC_I ,KC_O   , CTL_QUOT,
      KC_LSFT , KC_Z ,  KC_X   ,  KC_C  ,   KC_D ,   KC_V , KC_LBRC,_______ ,   _______, KC_RBRC, KC_K   ,   KC_H,  KC_COMM, KC_DOT ,KC_SLSH, KC_RSFT ,
-                                 KC_APP, KC_LGUI,ALT_BSPC, KC_LSFT,  NAV   ,    SYM   , KC_SPC ,ALTG_ENT,CW_TOGG,  FKEYS
+                                 KC_APP, KC_LGUI, KC_LALT, KC_BSPC,  NAV   ,    SYM   , KC_SPC ,ALTG_ENT,CW_TOGG,  FKEYS
     ),
 
 /*
