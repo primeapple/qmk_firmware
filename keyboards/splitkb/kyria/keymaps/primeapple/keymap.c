@@ -63,6 +63,7 @@ TapHold tapholds[] = {
 };
 
 enum my_keycodes {
+    // Used for tapholds with symbols
     G_EX = SAFE_RANGE,
     A_AT,
     C_HA,
@@ -71,7 +72,9 @@ enum my_keycodes {
     C_AS,
     A_LP,
     G_RP,
-    KC_LAST
+    TAP_HOLD_LAST,
+    OS_LAPP, // GUI on Linux,  HYPR on Mac
+    OS_LCMD  // Ctrl on Linux, Cmd on Mac
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -83,17 +86,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
  * |Ctrl/Esc|   A  |   R  |   S  |   T  |   G  |                              |   M  |   N  |   E  |   I  |   O  |Ctrl/' "|
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * | LShift |   Z  |   X  |   C  |   D  |   V  | [ {  |CapsLk|  |F-keys|  ] } |   K  |   H  | ,  < | . >  | /  ? | RShift |
+ * | LShift |   Z  |   X  |   C  |   D  |   V  |      |CapsLk|  |F-keys|      |   K  |   H  | ,  < | . >  | /  ? | RShift |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                        | MENU | LGUI | BkSp/|LShift| Nav  |  | Sym  | Space| AltG/|CapsLK| FKEYS|
- *                        |      |      | LAlt |      |      |  |      |      | Enter| word |      |
+ *                        | MENU | LAlt | LGUI |BkSpc | Nav  |  | Sym  | Space| AltG/|CapsLK| FKEYS|
+ *                        |      |      |      |      |      |  |      |      | Enter| word |      |
  *                        `----------------------------------'  `----------------------------------'
  */
     [_COLEMAK_DH] = LAYOUT(
      KC_TAB  , KC_Q ,  KC_W   ,  KC_F  ,   KC_P ,   KC_B ,                                        KC_J  ,   KC_L,  KC_U   ,   KC_Y ,KC_LBRC, KC_RBRC ,
      CTL_ESC , KC_A  , KC_R   ,  KC_S  ,   KC_T ,   KC_G ,                                        KC_M  ,   KC_N,  KC_E   ,   KC_I ,KC_O   , CTL_QUOT,
      KC_LSFT , KC_Z ,  KC_X   ,  KC_C  ,   KC_D ,   KC_V , KC_LBRC,_______ ,   _______, KC_RBRC, KC_K   ,   KC_H,  KC_COMM, KC_DOT ,KC_SLSH, KC_RSFT ,
-                                 KC_APP, KC_LGUI, KC_LALT, KC_BSPC,  NAV   ,    SYM   , KC_SPC ,ALTG_ENT,CW_TOGG,  FKEYS
+                                KC_LALT, OS_LAPP, OS_LCMD, KC_BSPC,  NAV   ,    SYM   , KC_SPC ,ALTG_ENT,CW_TOGG,  FKEYS
     ),
 
 /*
@@ -185,7 +188,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     static uint16_t timer;
 
-    if (SAFE_RANGE <= keycode && keycode < KC_LAST) {
+    if (SAFE_RANGE <= keycode && keycode < TAP_HOLD_LAST) {
         TapHold taphold = tapholds[keycode - SAFE_RANGE];
 
         if (record->event.pressed) {
@@ -199,6 +202,36 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         return false;
     }
+
+
+    switch (keycode) {
+        case OS_LAPP:
+            if (record->event.pressed) {
+                if (detected_host_os() == OS_MACOS) {
+                    register_mods(MOD_HYPR);
+                } else {
+                    register_code(KC_LGUI);
+                }
+            } else {
+                unregister_mods(MOD_HYPR);
+                unregister_code(KC_LGUI);
+            }
+            return false;
+
+        case OS_LCMD:
+            if (record->event.pressed) {
+                if (detected_host_os() == OS_MACOS) {
+                    register_code(KC_LGUI);
+                } else {
+                    register_code(KC_LCTL);
+                }
+            } else {
+                unregister_code(KC_LGUI);
+                unregister_code(KC_LCTL);
+            }
+            return false;
+    }
+
     return true;
 }
 
@@ -222,7 +255,11 @@ bool oled_task_user(void) {
         // clang-format on
 
         oled_write_P(qmk_logo, false);
-        oled_write_P(PSTR("Kyria rev2.0\n\n"), false);
+        oled_write_P(PSTR("Kyria rev2.0"), false);
+        if (detected_host_os() == OS_MACOS) {
+            oled_write_P(PSTR(" - MacOS"), false);
+        }
+        oled_write_P(PSTR("\n\n"), false);
 
         // Host Keyboard Layer Status
         oled_write_P(PSTR("Layer: "), false);

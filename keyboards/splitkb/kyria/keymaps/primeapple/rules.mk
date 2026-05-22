@@ -5,3 +5,4 @@ RGBLIGHT_ENABLE = no      # Enable keyboard RGB underglow
 TAP_DANCE_ENABLE = no      # Enable tap dance
 DYNAMIC_TAPPING_TERM_ENABLE = yes
 CAPS_WORD_ENABLE = yes # Enable CapsLockPerWord key
+OS_DETECTION_ENABLE = yes # Enable detection of MacOS
